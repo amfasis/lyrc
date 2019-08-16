@@ -1,0 +1,19 @@
+[Unit]
+Description=lyrc
+After=multi-user.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=users
+WorkingDirectory=/home/pi/infra_red/lyrc
+ExecStart=/usr/bin/python3 -m lyrcd
+Restart=always
+TimeoutStartSec=10
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target

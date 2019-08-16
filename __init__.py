@@ -1,0 +1,4 @@
+"""
+Lyrc package
+"""
+import .lyrcd
