@@ -63,6 +63,13 @@ The imported configuration is a bit garbled, but you should be able to read the 
 The `header`, `one`, `zero`, `ptrail` settings can contain more than one pulse-length, the first and third (and so on) item will always be a pulse of the specified length on a carrier wave of the `freq` setting (which is in kHz), the other items will be 'spaces', no IR-light is send out.
 The `gap` setting is only a single integer, since it should be a gap, not a "filled gap" ;-)
 
+## Tricks
+I also use a cronjob to automatically switch off my amplifier at night (when forgotten):
+
+```Bash
+echo "SEND_ONCE Pioneer_XXD3067 PowerOff" EOF | nc 127.0.0.1 7059 -q 1
+```
+
 ## Known issues
 When a client connects, the first command can take to some time to get processed (~15s) because Pigpio has to start up.
 
