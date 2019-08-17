@@ -4,6 +4,8 @@ This project is an attempt to replace LIRC with a python variant. This came to b
 
 I was using LIRC to send IR-pulses to my amplifier, using the Android app [LIRC client](https://play.google.com/store/apps/details?id=com.chham.lirc_client). This is what LYRC can also do. I know LIRC can do more than that, also sending actual key events as user input. Since I don't use that part, I also did not attempt to implement anything for that in Lyrc, and honestly I don't think it is possible with Python.
 
+This project was inspired by `irrp.py` from http://abyz.co.uk/rpi/pigpio/examples.html#Python_irrp_py (unfortunately the link has died)
+
 ## Features
 - **Send IR-pulses on GPIO using Pigpio**
 - **Start and stop Pigpio deamon.** I found running Pigpio daemon all the time eats 10% of my Raspberry Pi's CPU.
