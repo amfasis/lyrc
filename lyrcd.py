@@ -17,7 +17,7 @@ listen_address = config.get('server', 'listen_address', fallback='0.0.0.0')
 listen_port = int(config.get('server', 'listen_port', fallback='7059'))
 
 gpio_pin = int(config.get('pigpio', 'gpio_pin', fallback=22))
-maintain_pigpio = bool(config.get('pigpio', 'maintain_pigpio', fallback=False))
+start_pigpio = bool(config.get('pigpio', 'start_pigpio', fallback=False))
 keep_alive = int(config.get('pigpio', 'keep_alive', fallback=300))
 
 config_path = config.get('remotes', 'path', fallback='/etc/lirc')
@@ -39,7 +39,7 @@ async def handle_client(reader, writer):
 
     global client_count
     if not client_count:
-        loop.create_task(irsend_thread(queue, loop, config_path, gpio_pin, maintain_pigpio, verbose))
+        loop.create_task(irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbose))
 
     client_count += 1
 

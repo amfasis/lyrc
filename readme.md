@@ -1,6 +1,6 @@
 # Lyrc - Python replacement for LIRC
 
-This project is an attempt to replace LIRC with a python variant. This came to be when my Raspberry Pi kernel was updated and lost the lirc-rpi dtoverlay and I couldn't get the new lirc-gpio-tx to work.
+This project is an attempt to replace LIRC with a python variant. This came to be when my Raspberry Pi kernel was updated and lost the `lirc-rpi` dtoverlay and I couldn't get the new `gpio-ir-tx` to work.
 
 I was using LIRC to send IR-pulses to my amplifier, using the Android app [LIRC client](https://play.google.com/store/apps/details?id=com.chham.lirc_client). This is what LYRC can also do. I know LIRC can do more than that, also sending actual key events as user input. Since I don't use that part, I also did not attempt to implement anything for that in Lyrc, and honestly I don't think it is possible with Python.
 
@@ -44,7 +44,7 @@ The configuration of Lyrcd is in `config.ini`. You shuold craft your own version
 ### [pigpio]
 - **gpio_pin** (default `22`) 
   The GPIO pin on which you installed the IR transmitter
-- **maintain_pigpio** (default `False`) 
+- **start_pigpio** (default `False`) 
   Whether to start and stop the `pigpiod.service` when a client connects
 - **keep_alive** (default `300`) 
   The time to keep the `Pigpiod.service` alive after a client connects
@@ -64,6 +64,8 @@ The `header`, `one`, `zero`, `ptrail` settings can contain more than one pulse-l
 The `gap` setting is only a single integer, since it should be a gap, not a "filled gap" ;-)
 
 ## Known issues
+When a client connects, the first command can take to some time to get processed (~15s) because Pigpio has to start up.
+
 I'm not aware of not working parts of the project, however I am aware that it is only build for one specific remote config. I'm happy to help where I can in case you need a remote with additional configurations. 
 
 Any updates to the project are also welcome.

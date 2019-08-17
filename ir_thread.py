@@ -10,13 +10,13 @@ from command import CommandItem
 """
 Consumer with an infinite loop. It only stops if there is a poison pill.
 """
-async def irsend_thread(queue, loop, config_path, gpio_pin, maintain_pigpio, verbose):
+async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbose):
     print("Starting IR thread")
     remotes = read_config(config_path)
     
     print("Loaded {} remote(s) from {}".format(len(remotes), config_path))
 
-    if maintain_pigpio:
+    if start_pigpio:
         os.system("sudo service pigpiod start")
         print("started pigpiod")
 
@@ -124,7 +124,7 @@ async def irsend_thread(queue, loop, config_path, gpio_pin, maintain_pigpio, ver
 
         pi.stop()
 
-        if maintain_pigpio:
+        if start_pigpio:
             print("stopping pigpiod")
             os.system("sudo service pigpiod stop")
         

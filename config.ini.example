@@ -7,7 +7,7 @@ path = /home/pi/infra_red/lyrc/remotes
 
 [pigpio]
 gpio_pin = 22
-maintain_pigpio = True
+start_pigpio = True
 keep_alive = 1800
 
 [logging]
