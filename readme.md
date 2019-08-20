@@ -75,6 +75,8 @@ echo "SEND_ONCE Pioneer_XXD3067 PowerOff" EOF | nc 127.0.0.1 7059 -q 1
 ## Known issues
 When a client connects, the first command can take to some time to get processed (~15s) because Pigpio has to start up.
 
-I'm not aware of not working parts of the project, however I am aware that it is only build for one specific remote config. I'm happy to help where I can in case you need a remote with additional configurations. 
+I had two occasions where the ir-thread exited with an exception, which I think was related to the pigpio deamon not available (while the daemon was requested to start).
+
+I am aware that it is only build for one specific remote config. I'm happy to help where I can in case you need a remote with additional configurations. 
 
 Any updates to the project are also welcome.
