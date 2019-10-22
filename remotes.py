@@ -81,7 +81,7 @@ def __read_codes(remote, line):
         (key, code) = tuple(filter(None, line.split(" ")))
         bytecode = bytearray.fromhex(code.replace("0x", ""))
         if len(bytecode) * 8 != remote.bits:
-            print("Warning, incorrect number of bits for key '{}'".format(key))
+            logging.info("Warning, incorrect number of bits for key '{}'".format(key))
         remote.codes[key] = bytecode
 
 

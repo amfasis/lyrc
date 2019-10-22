@@ -2,6 +2,7 @@ import pigpio
 import os
 import asyncio
 from collections import Iterable
+import logging
 
 from remotes import read_config
 from command import CommandItem
@@ -11,14 +12,14 @@ from command import CommandItem
 Consumer with an infinite loop. It only stops if there is a poison pill.
 """
 async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbose):
-    print("Starting IR thread")
+    logging.info("Starting IR thread")
     remotes = read_config(config_path)
     
-    print("Loaded {} remote(s) from {}".format(len(remotes), config_path))
+    logging.info("Loaded {} remote(s) from {}".format(len(remotes), config_path))
 
     if start_pigpio:
         os.system("sudo service pigpiod start")
-        print("started pigpiod")
+        logging.info("started pigpiod")
 
     pi = pigpio.pi()
     pi.set_mode(gpio_pin, pigpio.OUTPUT)
@@ -28,10 +29,10 @@ async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbos
     waves = {}
     for remote in remotes.keys():
         if verbose:
-            print("Creating waves for {}".format(remote))
+            logging.info("Creating waves for {}".format(remote))
         waves[remote] = __create_waves(pi, remotes[remote], gpio_pin)
 
-    print("PiGPIO loaded with pin {} and {} remote(s)".format(gpio_pin, len(remotes)))
+    logging.info("PiGPIO loaded with pin {} and {} remote(s)".format(gpio_pin, len(remotes)))
 
     repeat_wave = None #the wave form last generated, to be transmitted again (or None if not needed to repeat)
     try:
@@ -41,7 +42,7 @@ async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbos
                 item = await queue.get() # coroutine will be blocked if queue is empty
 
                 if not isinstance(item, CommandItem):
-                    print("got {}, closing".format(item))
+                    logging.info("got {}, closing".format(item))
                     break #clean close
                 
                 assert(isinstance(item.future, asyncio.Future))
@@ -88,7 +89,7 @@ async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbos
                             chain.append(4) #append gap
 
                         if verbose:
-                            print("chain {}".format(chain))
+                            logging.info("chain {}".format(chain))
     
                         repeat_wave = list(__flatten([waves[item.remote][id] for id in chain]))
 
@@ -113,9 +114,9 @@ async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbos
                     await asyncio.sleep(0.05)
     
     except asyncio.CancelledError:
-        print("cancelling blasting thread")
+        logging.info("cancelling blasting thread")
     except Exception as e:
-        print("exception: {}".format(e))
+        logging.exception("Exception in ir_thread", e, stack_info=True)
     finally:
         for rwaves in waves.values():
             for pwaves in rwaves:
@@ -125,10 +126,10 @@ async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbos
         pi.stop()
 
         if start_pigpio:
-            print("stopping pigpiod")
+            logging.info("stopping pigpiod")
             os.system("sudo service pigpiod stop")
         
-        print("Stopped ir blaster thread")
+        logging.info("Stopped ir blaster thread")
     
 
 
@@ -163,7 +164,7 @@ def __create_waves(pi, remote, gpio_pin):
     waves = []
     
     pi.wave_clear()
-    print(str(remote))
+    logging.info(str(remote))
     for code in [remote.header, remote.one, remote.zero, remote.ptrail]:
         code_waves = []
         for i, length in enumerate(code):

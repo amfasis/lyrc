@@ -4,6 +4,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import responses
 import configparser
+import logging
 
 from command import CommandItem
 from ir_thread import irsend_thread
@@ -33,9 +34,9 @@ client_count = 0
 
 ########### Working logic
 async def handle_client(reader, writer):
-    print("New client: {}".format(reader._transport._extra['peername']))
+    logging.info("New client: {}".format(reader._transport._extra['peername']))
     request = None
-    loop = asyncio.get_event_loop()
+    global loop
 
     global client_count
     if not client_count:
@@ -48,7 +49,7 @@ async def handle_client(reader, writer):
         if not request:
             break
 
-        print(request)
+        logging.info(request)
 
         parts = request.split(" ")
 
@@ -73,44 +74,44 @@ async def handle_client(reader, writer):
                 response = responses.error(request, "unknown error")
 
         except Exception as e:
-            print("exception {}".format(e))
+            logging.exception("Exception in ir_thread", e, stack_info=True)
             response = responses.error(request, str(e))
             pass
 
         writer.write((response+"\n").encode('utf8'))
 
-    print("client done")
+    logging.info("client done")
     writer.close()
     
     if keep_alive > 0:
-        print("Keep-alive sleep for {}s".format(keep_alive))
+        logging.info("Keep-alive sleep for {}s".format(keep_alive))
         try:
             await asyncio.sleep(keep_alive)
         except asyncio.CancelledError:
             pass
         
     client_count -= 1
-    print("Clients left: {}".format(client_count))
+    logging.info("Clients left: {}".format(client_count))
     if not client_count:
-        print("sending stop to irsend_thread")
+        logging.info("sending stop to irsend_thread")
         await queue.put("stop")
 
 
 
 
-
-print("Starting LYRC")
+logging.basicConfig(level=logging.INFO)
+logging.info("Starting LYRC")
 loop = asyncio.get_event_loop()
 server_coro = asyncio.start_server(handle_client, listen_address, listen_port)
 server = loop.run_until_complete(server_coro) 
-print("Started LYRC, listening on {}:{}, blasting on GPIO-{}".format(listen_address, listen_port, gpio_pin))
+logging.info("Started LYRC, listening on {}:{}, blasting on GPIO-{}".format(listen_address, listen_port, gpio_pin))
 
 try:
     loop.run_forever()
 except KeyboardInterrupt:  # CTRL+C pressed
     pass
 
-print('Shutting down LYRC')
+logging.info('Shutting down LYRC')
 server.close()
 loop.run_until_complete(server.wait_closed())
 loop.close() 
