@@ -169,11 +169,11 @@ def __create_waves(pi, remote, gpio_pin):
         for i, length in enumerate(code):
 
             if i%2 == 0:
-                res = pi.wave_add_generic(__carrier(gpio_pin, remote.freq, round(length / 2)))
+                res = pi.wave_add_generic(__carrier(gpio_pin, remote.freq, round(length)))
                 res = pi.wave_create()
                 code_waves.append(res)
             else:
-                res = pi.wave_add_generic([pigpio.pulse(0, 0, round(length / 2))])
+                res = pi.wave_add_generic([pigpio.pulse(0, 0, round(length))])
                 res = pi.wave_create()
                 code_waves.append(res)
 
