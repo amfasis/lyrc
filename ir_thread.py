@@ -21,6 +21,12 @@ async def irsend_thread(queue, loop, config_path, gpio_pin, start_pigpio, verbos
         os.system("sudo service pigpiod start")
         logging.info("started pigpiod")
 
+    #check if alive
+    ret = os.system("sudo service pigpiod status")
+    if ret > 0:
+        logging.info("pigpiod seems to be dead")
+        return
+
     pi = pigpio.pi()
     pi.set_mode(gpio_pin, pigpio.OUTPUT)
     pi.wave_clear()
