@@ -77,6 +77,10 @@ When a client connects, the first command can take to some time to get processed
 
 I had two occasions where the ir-thread exited with an exception, which I think was related to the pigpio deamon not available (while the daemon was requested to start).
 
+During initial development (porting irrp) I had to divide the pulse length by 2 (lines 179 and 183 in ir_thread.py). After some time not using I found it was not working anymore, and I could fix it by removing the division by two. Maybe pigpio updated in the mean time or maybe something else was wrong on my site.
+
+## Contributions
+
 I am aware that it is only build for one specific remote config. I'm happy to help where I can in case you need a remote with additional configurations. 
 
 Any updates to the project are also welcome.
