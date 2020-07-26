@@ -1,3 +1,7 @@
+# Not maintained anymore
+
+this project is not being maintaines anymore, since I replaced it with an esp8266 setup. There are still issues with this project, feel free to make merge requests.
+
 # Lyrc - Python replacement for LIRC
 
 This project is an attempt to replace LIRC with a python variant. This came to be when my Raspberry Pi kernel was updated and lost the `lirc-rpi` dtoverlay and I couldn't get the new `gpio-ir-tx` to work.
